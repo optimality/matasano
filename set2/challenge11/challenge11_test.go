@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"crypto/aes"
 	cryptoRand "crypto/rand"
+	mathRand "math/rand"
 	"testing"
 )
-import mathRand "math/rand"
 
 func XOR(a, b []byte) []byte {
 	if len(a) != len(b) {
