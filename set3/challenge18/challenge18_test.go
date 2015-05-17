@@ -4,7 +4,6 @@ import (
 	"crypto/aes"
 	"encoding/base64"
 	"encoding/binary"
-	"fmt"
 	"testing"
 )
 
@@ -21,7 +20,6 @@ func CTR(plaintext []byte, key []byte, nonce uint64) []byte {
 			nonceBytes := make([]byte, 16)
 			binary.LittleEndian.PutUint64(nonceBytes, nonce)
 			nonceBytes = append(nonceBytes[8:16], nonceBytes[0:8]...)
-			fmt.Printf("Nonce bytes: %v\n", nonceBytes)
 			nonce++
 			block.Encrypt(keystream, nonceBytes)
 		}
