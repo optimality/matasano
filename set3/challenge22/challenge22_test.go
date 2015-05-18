@@ -1,6 +1,9 @@
-package challenge21
+package challenge22
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 type MersenneTwister struct {
 	MT    [624]uint32
@@ -41,9 +44,23 @@ func (mt *MersenneTwister) GenerateNumbers() {
 	}
 }
 
-func TestMersenneTwister(t *testing.T) {
-	twister := NewMersenneTwister(0)
-	for i := 0; i < 100; i++ {
-		t.Log(twister.NextInt())
+func TestMersenneTwisterCrack(t *testing.T) {
+	time.Sleep(50 * time.Second)
+	seed := uint32(time.Now().Unix())
+	twister := NewMersenneTwister(seed)
+	time.Sleep(50 * time.Second)
+	r := twister.NextInt()
+
+	testSeed := uint32(time.Now().Unix())
+	for {
+		testTwister := NewMersenneTwister(testSeed)
+		testR := testTwister.NextInt()
+		if testR == r {
+			break
+		}
+		testSeed--
+	}
+	if seed != testSeed {
+		t.Errorf("Failed to get testSeed!  Expected: %v Actual: %v", seed, testSeed)
 	}
 }
