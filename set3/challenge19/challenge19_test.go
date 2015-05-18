@@ -55,7 +55,7 @@ func EnglishFrequency(s []byte) int {
 }
 
 // TODO(austin): This attack doesn't get everything, but it's pretty good.  Not going to spend time improving it more,
-// per the instructins.
+// per the instructions.
 func TestReusedNonces(t *testing.T) {
 	key := []byte("YELLOW SUBMARINE")
 	nonce := uint64(0)
