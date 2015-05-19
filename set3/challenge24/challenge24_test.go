@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"testing"
+	"time"
 )
 
 type MersenneTwister struct {
@@ -100,5 +101,28 @@ func TestBruteForceKey(t *testing.T) {
 	recoveredPlaintext := CTRMT(ciphertext, testKey)
 	if !bytes.Equal(recoveredPlaintext, plaintext) {
 		t.Errorf("Failed to recover plaintext.  Expected: %s Actual: %s", plaintext, recoveredPlaintext)
+	}
+}
+
+func TestPasswordTokenCurrentTimeSeeded(t *testing.T) {
+	token := []byte("password token")
+	key := make([]byte, 2)
+	binary.LittleEndian.PutUint16(key, uint16(time.Now().Unix()-100))
+	ciphertext := CTRMT(token, key)
+
+	now := uint32(time.Now().Unix())
+	var test []byte
+	found := false
+	for i := uint32(0); i < 3600; i++ {
+		testKey := make([]byte, 2)
+		binary.LittleEndian.PutUint16(testKey, uint16(now-i))
+		test = CTRMT(token, testKey)
+		if bytes.Equal(test, ciphertext) {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("Failed to break token!\n")
 	}
 }
